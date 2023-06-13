@@ -17,14 +17,14 @@ const jsPsych = initJsPsych();
 const instructions = {
     type: jsPsychInstructions,
     pages: [
-        "<p>By answering the following questions, you are participating in a study being performed by cognitive scientists in the Stanford Department of Psychology.\
+        "<p class='instructions-text'>By answering the following questions, you are participating in a study being performed by cognitive scientists in the Stanford Department of Psychology.\
          If you have questions about this research, please contact <strong>Ben Prystawski</strong> at <a href='mailto:benpry@stanford.edu'>benpry@stanford.edu</a> or\
          Noah Goodman at ngoodman@stanford.edu. You must be at least 18 years old to participate. Your participation in this research is voluntary.\
          You may decline to answer any or all of the following questions. You may decline further participation, at any time, without adverse consequences.\
          Your anonymity is assured; the researchers who have requested your participation will not receive any personal information about you.</p>",
-        "In this study, we will ask you to estimate the probabilities of certain events that might take place in a park. We will ask you both the baseline probability\
+        "<p class='instructions-text'>In this study, we will ask you to estimate the probabilities of certain events that might take place in a park. We will ask you both the baseline probability\
          of the event, and the probability given that we intervene in the park in a certain way. For example, we might ask you to estimate the probability\
-         that the park is crowded, and then the probability that the park is crowded given that we intervene by renovating the park. Press 'Next' to begin the experiment."
+         that the park is crowded, and then the probability that the park is crowded given that we intervene by renovating the park. Press 'Next' to begin the experiment.</p>"
     ],
     show_clickable_nav: true
 }

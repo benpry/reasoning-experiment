@@ -514,3 +514,9 @@
 #jspsych-data-display {
   text-align: left;
 }
+
+.instructions-text {
+  width: 60ch;
+  max-width: 100%;
+  text-align: justify;
+}
