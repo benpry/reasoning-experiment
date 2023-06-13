@@ -43,14 +43,14 @@ variables.map((v, i) => {
         if (i != i2) {
             const interventionTrialTrue = {
                 type: jsPsychHtmlSliderResponse,
-                stimulus: "Suppose we were to intervene such that " + v[1] + ". How likely is it that " + v2[1] + "?",
+                stimulus: "Suppose we were to intervene such that " + v2[1] + ". How likely is it that " + v[1] + "?",
                 labels: ["impossible", "25%", "50%", "75%", "certain"],
                 slider_width: 500
             }
             trials.push(interventionTrialTrue)
             const interventionTrialFalse = {
                 type: jsPsychHtmlSliderResponse,
-                stimulus: "Suppose we were to intervene such that " + v[0] + ". How likely is it that " + v2[1] + "?",
+                stimulus: "Suppose we were to intervene such that " + v2[0] + ". How likely is it that " + v[1] + "?",
                 labels: ["impossible", "25%", "50%", "75%", "certain"],
                 slider_width: 500
             }
