@@ -12,7 +12,14 @@ const variables = [
     ["the grass is dry", "the grass is dry"]
 ]
 
-const jsPsych = initJsPsych();
+const SLIDER_WIDTH = 500;
+const SLIDER_LABELS = ["impossible", "25%", "50%", "75%", "certain"];
+
+const jsPsych = initJsPsych({
+    on_finish: function () {
+        proliferate.submit({"trials": data.values()})
+    }
+});
 
 const instructions = {
     type: jsPsychInstructions,
@@ -35,8 +42,8 @@ variables.map((v, i) => {
     const marginalTrial = {
         type: jsPsychHtmlSliderResponse,
         stimulus: "How likely is it that " + v[1] + "?",
-        labels: ["impossible", "25%", "50%", "75%", "certain"],
-        slider_width: 500
+        labels: SLIDER_LABELS,
+        slider_width: SLIDER_WIDTH
     }
     trials.push(marginalTrial)
     variables.map((v2, i2) => {
@@ -44,15 +51,15 @@ variables.map((v, i) => {
             const interventionTrialTrue = {
                 type: jsPsychHtmlSliderResponse,
                 stimulus: "Suppose we were to intervene such that " + v2[1] + ". How likely is it that " + v[1] + "?",
-                labels: ["impossible", "25%", "50%", "75%", "certain"],
-                slider_width: 500
+                labels: SLIDER_LABELS,
+                slider_width: SLIDER_WIDTH
             }
             trials.push(interventionTrialTrue)
             const interventionTrialFalse = {
                 type: jsPsychHtmlSliderResponse,
                 stimulus: "Suppose we were to intervene such that " + v2[0] + ". How likely is it that " + v[1] + "?",
-                labels: ["impossible", "25%", "50%", "75%", "certain"],
-                slider_width: 500
+                labels: SLIDER_LABELS,
+                slider_width: SLIDER_WIDTH
             }
             trials.push(interventionTrialFalse)
         }
@@ -61,4 +68,7 @@ variables.map((v, i) => {
 
 console.log("num trials", trials.length)
 
-jsPsych.run(trials);
+jsPsych.run(trials.slice(0, 10));
+
+var data = jsPsych.data.get().json();
+console.log(data)
