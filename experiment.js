@@ -68,7 +68,6 @@ variables.map((v, i) => {
 
 console.log("num trials", trials.length)
 
-jsPsych.run(trials.slice(0, 10));
+const trialsToRun = trials.slice(0, 10);
 
-var data = jsPsych.data.get().json();
-console.log(data)
+jsPsych.run(trialsToRun);
