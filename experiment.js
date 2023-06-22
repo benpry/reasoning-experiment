@@ -16,7 +16,7 @@ const SLIDER_WIDTH = 500;
 const SLIDER_LABELS = ["impossible", "25%", "50%", "75%", "certain"];
 
 const jsPsych = initJsPsych({
-    on_finish: function () {
+    on_finish: function (data) {
         proliferate.submit({"trials": data.values()})
     }
 });
