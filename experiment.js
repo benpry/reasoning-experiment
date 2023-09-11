@@ -99,7 +99,7 @@ const instructions = {
          Noah Goodman at ngoodman@stanford.edu. You must be at least 18 years old to participate. Your participation in this research is voluntary.\
          You may decline to answer any or all of the following questions. You may decline further participation, at any time, without adverse consequences.\
          Your anonymity is assured; the researchers who have requested your participation will not receive any personal information about you.</p>",
-    "<p class='instructions-text'>This is an experiment exploring how people reason. You will be given twelve problems. In each case, you will be given passage\
+    "<p class='instructions-text'>This is an experiment investigating how people reason. You will be given twelve problems. In each case, you will be given passage\
          to read and asked if a certain conclusion may be logically deduced from it. You should answer this question on the assumption that all the information \
          given in the passage is, in fact, true. If you judge that the conclusion necessarily follows from the statements in the passage, you should answer 'yes,' otherwise 'no.'</p>",
   ],
