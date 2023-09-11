@@ -87,8 +87,7 @@ const syllogisms = [
 
 const jsPsych = initJsPsych({
   on_finish: function (data) {
-    console.log(data.values());
-    // proliferate.submit({ trials: data.values() });
+    proliferate.submit({ trials: data.values() });
   },
 });
 
