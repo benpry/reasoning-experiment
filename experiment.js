@@ -113,9 +113,13 @@ syllogisms.map((s, i) => {
   const trial = {
     type: jsPsychHtmlButtonResponse,
     prompt:
-      '<p>Press "yes" if you think the conclusion is valid given the first two statements, and "no" otherwise.</p>',
-    stimulus: renderLines(s[0]),
+      '<p>Choose "yes" if the conclusion is valid given the first two statements, otherwise "no".</p>',
+    stimulus: `<div class="stimulus-text">${renderLines(s[0])}</div>`,
     choices: ["yes", "no"],
+    button_html: [
+      `<button class='jspsych-btn' style="background:#3ab059;font-size:18pt">%choice%</button>`,
+      `<button class='jspsych-btn' style="background:#d94e3f;font-size:18pt">%choice%</button>`,
+    ],
   };
   trials.push(trial);
 });

@@ -2,3 +2,8 @@
   text-align: left;
   font-size: large;
 }
+
+.stimulus-text {
+  width: fit-content;
+  margin: auto;
+}
