@@ -114,6 +114,7 @@ syllogisms.map((s, i) => {
     type: jsPsychHtmlButtonResponse,
     prompt:
       '<p>Choose "yes" if the conclusion is valid given the first two statements, otherwise "no".</p>',
+
     stimulus: `<div class="stimulus-text">${renderLines(s[0])}</div>`,
     choices: ["yes", "no"],
     button_html: [
@@ -124,12 +125,43 @@ syllogisms.map((s, i) => {
   trials.push(trial);
 });
 
+const survey = {
+  type: jsPsychSurveyText,
+  preamble:
+    "You have reached the end of the experiment! The experiment will be over after this survey.",
+  questions: [
+    {
+      prompt:
+        "Please describe the strategy you used to answer the questions in this experiment.",
+      rows: 6,
+      columns: 50,
+      name: "strategy",
+    },
+    {
+      prompt: "Did you feel the pay was fair?",
+      rows: 6,
+      columns: 50,
+      name: "payfair",
+    },
+    {
+      prompt:
+        "Please give any feedback you have about the experiment, including problems encountered.",
+      rows: 6,
+      columns: 50,
+      name: "feedback",
+    },
+  ],
+  name: "strategy",
+};
+trials.push(survey);
+
 const debrief = {
   type: jsPsychInstructions,
   pages: [
-    "<p class='instructions-text'>Thank you for participating in our experiment! Press 'Next' to submit your responses.</p>",
+    "<p class='instructions-text'>Thank you for participating in our experiment! Press 'Next' to submit your responses and be redirected back to Prolific.</p>",
   ],
   show_clickable_nav: true,
+  allow_previous: false,
 };
 trials.push(debrief);
 
