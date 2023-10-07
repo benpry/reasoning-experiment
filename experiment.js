@@ -1,15 +1,13 @@
 // JavaScript for syllogistic reasoning experiment
 
-const renderLines = function (text) {
-  // turn a string with newlines into multiple paragraphs
-  const paragraphs = text.split("\n");
-  const renderedText = paragraphs
-    .map((p) => {
-      return `<p class='syllogism-text'>${p}</p>`;
-    })
-    .join("");
-
-  return renderedText;
+const renderStimulus = function (stimulus) {
+  const statements = `<div class="world-statements">${stimulus.world
+    .map((s) => `<li>${s}</li>`)
+    .join("")}</div>`;
+  const premise = `<p><strong>Premise:</strong> ${stimulus.premise}</p>`;
+  const question = `<p><strong>Conclusion:</strong> ${stimulus.conclusion}</p>`;
+  const html = `<div class='stimulus'><ul>${statements}</ul>${premise}${question}</div>`;
+  return html;
 };
 
 function shuffle(array) {
@@ -33,58 +31,6 @@ function shuffle(array) {
   return array;
 }
 
-// constants
-const syllogisms = [
-  [
-    "No flowers are animals.\nAll reptiles are flowers.\nTherefore no reptiles are animals.",
-    "valid-inconsistent",
-  ],
-  [
-    "All trees are plants.\nSome trees are tall things.\nTherefore some plants are tall things.",
-    "valid-consistent",
-  ],
-  [
-    "All students read.\nSome people who read are professors.\nTherefore some students are professors.",
-    "invalid-inconsistent",
-  ],
-  [
-    "All diamonds are gems.\nSome gems are transparent things.\nTherefore some diamonds are transparent things.",
-    "invalid-consistent",
-  ],
-  [
-    "All dangerous things are weapons.\nAll weapons are guns.\nTherefore all dangerous things are guns.",
-    "valid-inconsistent",
-  ],
-  [
-    "Some politicians are dishonest people.\nAll dishonest people are people who lie.\nTherefore some politicians are people who lie.",
-    "valid-consistent",
-  ],
-  [
-    "All whales are mammals.\nAll whales have gills.\nTherefore all mammals have gills.",
-    "invalid-inconsistent",
-  ],
-  [
-    "All vehicles are things that move.\nSome things that move are trucks.\nTherefore some vehicles are trucks.",
-    "invalid-consistent",
-  ],
-  [
-    "No electronics have batteries.\nAll phones have batteries.\nTherefore no phones are electronics.",
-    "valid-inconsistent",
-  ],
-  [
-    "Some librarians are happy people.\nAll happy people are healthy people.\nTherefore some librarians are healthy people.",
-    "valid-consistent",
-  ],
-  [
-    "No famous actors are old people.\nAll famous actors are wealthy people.\nTherefore no old people are wealthy people.",
-    "invalid-inconsistent",
-  ],
-  [
-    "No vegetables are birds.\nAll birds have wings.\nTherefore, no vegetables have wings.",
-    "invalid-consistent",
-  ],
-];
-
 const jsPsych = initJsPsych({
   on_finish: function (data) {
     proliferate.submit({ trials: data.values() });
@@ -106,16 +52,18 @@ const instructions = {
   show_clickable_nav: true,
 };
 
+console.log(stimuli.length);
+
 const trials = [instructions];
 
-shuffle(syllogisms);
-syllogisms.map((s, i) => {
+shuffle(stimuli);
+stimuli.map((s, i) => {
   const trial = {
     type: jsPsychHtmlButtonResponse,
     prompt:
-      '<p>Choose "yes" if the conclusion is valid given the first two statements, otherwise "no".</p>',
+      '<p>Choose "yes" if the conclusion follows from the premise, and "no" otherwise.</p>',
 
-    stimulus: `<div class="stimulus-text">${renderLines(s[0])}</div>`,
+    stimulus: renderStimulus(s),
     choices: ["yes", "no"],
     button_html: [
       `<button class='jspsych-btn' style="background:#3ab059;font-size:18pt">%choice%</button>`,
