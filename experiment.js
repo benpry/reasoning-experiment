@@ -1,7 +1,10 @@
 // JavaScript for syllogistic reasoning experiment
 
+// constants
+const trialDuration = 10000; // 10 seconds
+
 const renderStimulus = function (stimulus) {
-  const statements = `<div class="world-statements">${stimulus.world
+  const statements = `<div class="world-statements">${shuffle(stimulus.world)
     .map((s) => `<li>${s}</li>`)
     .join("")}</div>`;
   const premise = `<p><strong>Premise:</strong> ${stimulus.premise}</p>`;
@@ -35,7 +38,12 @@ const jsPsych = initJsPsych({
   on_finish: function (data) {
     proliferate.submit({ trials: data.values() });
   },
+  display_element: "jspsych-target",
+  override_safe_mode: true,
 });
+
+const rawCondition = jsPsych.data.getURLVariable("condition");
+const isSpeeded = rawCondition == 1;
 
 const instructions = {
   type: jsPsychInstructions,
@@ -52,12 +60,17 @@ const instructions = {
   show_clickable_nav: true,
 };
 
-console.log(stimuli.length);
-
 const trials = [instructions];
 
 shuffle(stimuli);
 stimuli.map((s, i) => {
+  const preTrial = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: "Press 'start' to begin the trial",
+    choices: ["start"],
+    button_html: `<button class='jspsych-btn' style="font-size:18pt">%choice%</button>`,
+  };
+  trials.push(preTrial);
   const trial = {
     type: jsPsychHtmlButtonResponse,
     prompt:
@@ -65,6 +78,9 @@ stimuli.map((s, i) => {
 
     stimulus: renderStimulus(s),
     choices: ["yes", "no"],
+    on_load: isSpeeded ? startTimer : null,
+    on_finish: isSpeeded ? stopTimer : null,
+    trial_duration: isSpeeded ? trialDuration : null,
     button_html: [
       `<button class='jspsych-btn' style="background:#3ab059;font-size:18pt">%choice%</button>`,
       `<button class='jspsych-btn' style="background:#d94e3f;font-size:18pt">%choice%</button>`,
