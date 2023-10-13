@@ -1,6 +1,14 @@
+/* The total length of the animation */
+@property --len {
+  syntax: "<number>";
+  initial-value: 20;
+  inherits: true;
+}
+
+/* The current timestep */
 @property --t {
   syntax: "<number>";
-  initial-value: 10;
+  initial-value: 20;
   inherits: true;
 }
 /* won't be needed once Chrome supports round() */
@@ -9,6 +17,7 @@
   initial-value: 0;
   inherits: true;
 }
+
 .countdown {
   /* when Chrome supports round(), this can be simplified */
   /* more on this rounding trick
@@ -18,7 +27,7 @@
   margin: 1em auto;
   width: 10em;
   height: 10em;
-  animation: t 10s linear 1;
+  animation: t calc(var(--len) * 1s) linear 1;
 }
 .countdown::after {
   grid-column: 1;
@@ -48,7 +57,7 @@ svg {
   stroke: silver;
 }
 [r] + [r] {
-  --k: calc(var(--t) / 10);
+  --k: calc(var(--t) / var(--len));
   transform: rotate(-90deg);
   stroke-linecap: round;
   stroke: color-mix(in hsl shorter hue, #8a9b0f calc(var(--k) * 100%), #940a3d);

@@ -2,6 +2,11 @@
   text-align: left;
 }
 
+.world-statements ul {
+  display: table;
+  margin: 0 auto;
+}
+
 #jspsych-target {
   margin: 0px;
   height: 100%;
