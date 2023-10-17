@@ -24,35 +24,38 @@ const renderStimulus = function (stimulus, world) {
 function shuffle(array) {
   let currentIndex = array.length,
     randomIndex;
-
   // While there remain elements to shuffle.
   while (currentIndex > 0) {
     // Pick a remaining element.
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
-
     // And swap it with the current element.
     [array[currentIndex], array[randomIndex]] = [
       array[randomIndex],
       array[currentIndex],
     ];
   }
-
   return array;
 }
 
+let condition;
 const jsPsych = initJsPsych({
   on_finish: function (data) {
-    proliferate.submit({ trials: data.values() });
+    proliferate.submit({
+      trials: data.values(),
+      condition: condition,
+    });
   },
   display_element: "jspsych-target",
   override_safe_mode: true,
 });
 
+// get the condition from the url variable
 const rawCondition = jsPsych.data.getURLVariable("condition");
 const isSpeeded = rawCondition == 1;
+condition = isSpeeded ? "speeded" : "unspeeded";
 const speededInstruction = isSpeeded
-  ? `After seeing the premise and conclusion, you will have only ${numSeconds} seconds to make a decision.`
+  ? ` After seeing the premise and conclusion, you will have only ${nSeconds} seconds to make a decision.`
   : "";
 
 // consent form and instructions
@@ -70,11 +73,11 @@ const consent = {
 const instructions = {
   type: jsPsychInstructions,
   pages: [
-    `<p class='instructions-text'>This is an experiment investigating how people reason. You will be given twelve problems. In each case, you will be given a series
-         of statements to read, then you will be presented with a series of five if-then statements. For the task, you should pretend all of these sentences are true,
-         whether or not they are true in the real world. Next, you will be given a premise and a conclusion and asked to determine whether the conclusion follows
-         logically from the premise.${speededInstruction}</p>`,
-    `<p class='instructions-text'>Next, you will complete a practice trial to familiarize you with the task. Afterward, you will move on to the main trials.</p>`,
+    `<p class='instructions-text'>This is an experiment investigating how people reason. You will be given twelve problems. Each problem consists of a premise and a
+         conclusion. Your job is to determine whether the conclusion follows logically from the premise. Before each problem, you will have a chance to study a list of if-then statements. Next, you will be given a premise and a conclusion and asked to determine whether the conclusion follows
+         These statements are all about abstract variables with letters as names. Variables can be either true or false. All problems rely on the same set of if-then
+         statements.${speededInstruction}</p>`,
+    `<p class='instructions-text'>First, you will complete a practice trial to familiarize you with the task. Afterward, you will move on to the main trials.</p>`,
   ],
   show_clickable_nav: true,
 };
@@ -92,9 +95,9 @@ const prePractice = {
 const practice = {
   type: jsPsychHtmlButtonResponse,
   prompt:
-    '<p>Choose "yes" if the conclusion follows from the premise, and "no" otherwise.</p>',
+    '<p>Choose "valid" if the conclusion follows from the premise, and "invalid" if it does not.</p>',
   stimulus: renderStimulus(practiceStimulus, practiceStimulus.world),
-  choices: ["yes", "no"],
+  choices: ["valid", "invalid"],
   on_load: isSpeeded ? startTimer : null,
   on_finish: isSpeeded ? stopTimer : null,
   trial_duration: isSpeeded ? trialDuration : null,
@@ -105,11 +108,11 @@ const practice = {
 };
 
 const trials = [consent, instructions, prePractice, practice];
-
 const stimuli = shuffle(all_stimuli);
-stimuli.map((s, i) => {
-  const sWorld = shuffle(s.world);
 
+// this only works because all stimuli use the same world
+const sWorld = shuffle(stimuli[0].world);
+stimuli.map((s, i) => {
   const preTrial = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `<div class="stimulus">${renderWorld(sWorld)}</div>`,
@@ -121,9 +124,9 @@ stimuli.map((s, i) => {
   const trial = {
     type: jsPsychHtmlButtonResponse,
     prompt:
-      '<p>Choose "yes" if the conclusion follows from the premise, and "no" otherwise.</p>',
+      '<p>Choose "valid" if the conclusion follows from the premise, and "invalid" if it does not.</p>',
     stimulus: renderStimulus(s, sWorld),
-    choices: ["yes", "no"],
+    choices: ["valid", "invalid"],
     on_load: isSpeeded ? startTimer : null,
     on_finish: isSpeeded ? stopTimer : null,
     trial_duration: isSpeeded ? trialDuration : null,
@@ -135,6 +138,7 @@ stimuli.map((s, i) => {
   trials.push(trial);
 });
 
+// post-experiment survey
 const survey = {
   type: jsPsychSurveyText,
   preamble:
@@ -165,7 +169,8 @@ const survey = {
 };
 trials.push(survey);
 
-const debrief = {
+// exit
+const exit = {
   type: jsPsychInstructions,
   pages: [
     "<p class='instructions-text'>Thank you for participating in our experiment! Press 'Next' to submit your responses and be redirected back to Prolific.</p>",
@@ -173,6 +178,6 @@ const debrief = {
   show_clickable_nav: true,
   allow_previous: false,
 };
-trials.push(debrief);
+trials.push(exit);
 
 jsPsych.run(trials);
