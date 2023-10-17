@@ -89,7 +89,7 @@ const prePractice = {
     practiceStimulus.world,
   )}</div>`,
   choices: ["start"],
-  prompt: `<p>Study this list of statements, then click  "start" to see a question.</p>`,
+  prompt: `<p>Study this list of statements, then click  "start" to see a premise and conclusion.</p>`,
   button_html: `<button class='jspsych-btn' style="font-size:18pt">%choice%</button>`,
 };
 const practice = {
@@ -117,7 +117,7 @@ stimuli.map((s, i) => {
     type: jsPsychHtmlButtonResponse,
     stimulus: `<div class="stimulus">${renderWorld(sWorld)}</div>`,
     choices: ["start"],
-    prompt: `<p>Study this list of statements, then click  "start" to see a question.</p>`,
+    prompt: `<p>Study this list of statements, then click  "start" to see a premise and conclusion.</p>`,
     button_html: `<button class='jspsych-btn' style="font-size:18pt">%choice%</button>`,
   };
   trials.push(preTrial);
