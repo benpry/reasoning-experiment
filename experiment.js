@@ -1,8 +1,8 @@
 // JavaScript for syllogistic reasoning experiment
 
 // constants
-const nSeconds = 20;
-const trialDuration = nSeconds * 1000; // 20 seconds
+const nSeconds = 10;
+const trialDuration = nSeconds * 1000;
 
 // functions for rendering stimulus
 const renderWorld = function (world) {
@@ -73,11 +73,10 @@ const consent = {
 const instructions = {
   type: jsPsychInstructions,
   pages: [
-    `<p class='instructions-text'>This is an experiment investigating how people reason. You will be given twelve problems. Each problem consists of a premise and a
-         conclusion. Your job is to determine whether the conclusion follows logically from the premise. Before each problem, you will have a chance to study a list of if-then statements. Next, you will be given a premise and a conclusion and asked to determine whether the conclusion follows
-         These statements are all about abstract variables with letters as names. Variables can be either true or false. All problems rely on the same set of if-then
-         statements.${speededInstruction}</p>`,
-    `<p class='instructions-text'>First, you will complete a practice trial to familiarize you with the task. Afterward, you will move on to the main trials.</p>`,
+    `<p class='instructions-text'>This is an experiment investigating how people reason. You will be given twelve problems. Each problem consists of a set of if-then statements, a premise, and a
+         conclusion. Your job is to determine whether the conclusion follows logically from the premise. You will have a chance to study the list of if-then statements before seeing the premise
+         and conclusion. All problems rely on the same set of if-then statements.${speededInstruction}</p>`,
+    `<p class='instructions-text'>You will complete a practice trial to familiarize you with the task. You will move on to the main trials after completing the practice trial.</p>`,
   ],
   show_clickable_nav: true,
 };
@@ -89,7 +88,7 @@ const prePractice = {
     practiceStimulus.world,
   )}</div>`,
   choices: ["start"],
-  prompt: `<p>Study this list of statements, then click  "start" to see a premise and conclusion.</p>`,
+  prompt: `<p>Study this list of statements, then click  "start" to see a question.</p>`,
   button_html: `<button class='jspsych-btn' style="font-size:18pt">%choice%</button>`,
 };
 const practice = {
@@ -111,7 +110,8 @@ const trials = [consent, instructions, prePractice, practice];
 const stimuli = shuffle(all_stimuli);
 
 // this only works because all stimuli use the same world
-const sWorld = shuffle(stimuli[0].world);
+// const sWorld = shuffle(stimuli[0].world); we're not shuffling in this version
+const sWorld = stimuli[0].world;
 stimuli.map((s, i) => {
   const preTrial = {
     type: jsPsychHtmlButtonResponse,
