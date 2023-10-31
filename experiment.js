@@ -13,6 +13,7 @@ const renderWorld = function (world) {
 
   return statements;
 };
+
 const renderStimulus = function (stimulus, world) {
   const worldStatements = renderWorld(world);
   const premise = `<p><strong>Assuming that</strong> ${stimulus.observed}</p>`;
@@ -56,7 +57,7 @@ const rawCondition = jsPsych.data.getURLVariable("condition");
 const isSpeeded = rawCondition == 1;
 condition = isSpeeded ? "speeded" : "unspeeded";
 const speededInstruction = isSpeeded
-  ? ` After seeing the premise and conclusion, you will have only ${nSeconds} seconds to make a decision.`
+  ? ` After seeing the assumption and question, you will have only ${nSeconds} seconds to make a decision.`
   : "";
 
 // consent form and instructions
@@ -66,7 +67,7 @@ const consent = {
     "<p class='instructions-text'>By answering the following questions, you are participating in a study being performed by cognitive scientists in the Stanford Department of Psychology.\
          If you have questions about this research, please contact <strong>Ben Prystawski</strong> at <a href='mailto:benpry@stanford.edu'>benpry@stanford.edu</a> or\
          Noah Goodman at ngoodman@stanford.edu. You must be at least 18 years old to participate. Your participation in this research is voluntary.\
-         You may decline to answer any or pll of the following questions. You may decline further participation, at any time, without adverse consequences.\
+         You may decline to answer any or all of the following questions. You may decline further participation, at any time, without adverse consequences.\
          Your anonymity is assured; the researchers who have requested your participation will not receive any personal information about you.</p>",
   ],
   show_clickable_nav: true,
@@ -74,9 +75,11 @@ const consent = {
 const instructions = {
   type: jsPsychInstructions,
   pages: [
-    `<p class='instructions-text'>This is an experiment investigating how people reason. You will be given twelve problems. Each problem consists of a set of if-then statements, a premise, and a
-         conclusion. Your job is to determine whether the conclusion follows logically from the premise. You will have a chance to study the list of if-then statements before seeing the premise
-         and conclusion. All problems rely on the same set of if-then statements.${speededInstruction}</p>`,
+    `<p class='instructions-text'>This is an experiment investigating how people reason.</p>
+     <p class='instructions-text'>You will be given twenty problems. Each problem consists of a <strong>set of if-then statements</strong> and an <strong>assumption</strong>.
+      You will then be asked about another statement. Your job is to determine whether you can conclude that the second statement is true or false from the premise.</p>
+     <p class='instructions-text'>For example, you might see the statement "If it rains, then the grass is wet." and the assumption "It rains", then asked to evaluate the statement "The grass is wet."</p>
+     <p class='instructions-text'>All problems use the same set of if-then statements.${speededInstruction}</p>`,
     `<p class='instructions-text'>You will complete a practice trial to familiarize you with the task. You will move on to the main trials after completing the practice trial.</p>`,
   ],
   show_clickable_nav: true,
@@ -112,7 +115,7 @@ stimuli.map((s, i) => {
     type: jsPsychHtmlButtonResponse,
     stimulus: `<div class="stimulus">${renderWorld(world)}</div>`,
     choices: ["start"],
-    prompt: `<p>Study this list of statements, then click  "start" to see a premise and conclusion.</p>`,
+    prompt: `<p>Study this list of statements, then click  "start" to see an assumption and question.</p>`,
     button_html: `<button class='jspsych-btn' style="font-size:18pt">%choice%</button>`,
   };
   trials.push(preTrial);
