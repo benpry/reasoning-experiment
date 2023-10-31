@@ -1,7 +1,8 @@
 // JavaScript for syllogistic reasoning experiment
 
 // constants
-const nSeconds = 10;
+const nTrials = 20;
+const nSeconds = 5;
 const trialDuration = nSeconds * 1000;
 
 // functions for rendering stimulus
@@ -14,8 +15,8 @@ const renderWorld = function (world) {
 };
 const renderStimulus = function (stimulus, world) {
   const worldStatements = renderWorld(world);
-  const premise = `<p><strong>Premise:</strong> ${stimulus.premise}</p>`;
-  const question = `<p><strong>Conclusion:</strong> ${stimulus.conclusion}</p>`;
+  const premise = `<p><strong>Assuming that</strong> ${stimulus.observed}</p>`;
+  const question = `<p><strong>What can we conclude about the following statement?</strong></p><p>${stimulus.query}</p>`;
   const html = `<div class='stimulus'>${worldStatements}${premise}${question}</div>`;
   return html;
 };
@@ -93,29 +94,23 @@ const prePractice = {
 };
 const practice = {
   type: jsPsychHtmlButtonResponse,
-  prompt:
-    '<p>Choose "valid" if the conclusion follows from the premise, and "invalid" if it does not.</p>',
   stimulus: renderStimulus(practiceStimulus, practiceStimulus.world),
-  choices: ["valid", "invalid"],
+  choices: ["true", "false", "unknown"],
   on_load: isSpeeded ? startTimer : null,
   on_finish: isSpeeded ? stopTimer : null,
   trial_duration: isSpeeded ? trialDuration : null,
-  button_html: [
-    `<button class='jspsych-btn' style="font-size:18pt">%choice%</button>`,
-    `<button class='jspsych-btn' style="font-size:18pt">%choice%</button>`,
-  ],
+  button_html: `<button class='jspsych-btn' style="font-size:18pt">%choice%</button>`,
 };
 
 const trials = [consent, instructions, prePractice, practice];
-const stimuli = shuffle(all_stimuli);
+const stimuli = shuffle(all_stimuli).slice(0, nTrials);
 
 // this only works because all stimuli use the same world
 // const sWorld = shuffle(stimuli[0].world); we're not shuffling in this version
-const sWorld = stimuli[0].world;
 stimuli.map((s, i) => {
   const preTrial = {
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="stimulus">${renderWorld(sWorld)}</div>`,
+    stimulus: `<div class="stimulus">${renderWorld(world)}</div>`,
     choices: ["start"],
     prompt: `<p>Study this list of statements, then click  "start" to see a premise and conclusion.</p>`,
     button_html: `<button class='jspsych-btn' style="font-size:18pt">%choice%</button>`,
@@ -123,17 +118,12 @@ stimuli.map((s, i) => {
   trials.push(preTrial);
   const trial = {
     type: jsPsychHtmlButtonResponse,
-    prompt:
-      '<p>Choose "valid" if the conclusion follows from the premise, and "invalid" if it does not.</p>',
-    stimulus: renderStimulus(s, sWorld),
-    choices: ["valid", "invalid"],
+    stimulus: renderStimulus(s, world),
+    choices: ["true", "false", "unknown"],
     on_load: isSpeeded ? startTimer : null,
     on_finish: isSpeeded ? stopTimer : null,
     trial_duration: isSpeeded ? trialDuration : null,
-    button_html: [
-      `<button class='jspsych-btn' style="font-size:18pt">%choice%</button>`,
-      `<button class='jspsych-btn' style="font-size:18pt">%choice%</button>`,
-    ],
+    button_html: `<button class='jspsych-btn' style="font-size:18pt">%choice%</button>`,
   };
   trials.push(trial);
 });
