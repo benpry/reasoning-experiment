@@ -98,9 +98,10 @@ const instructions = {
   type: jsPsychInstructions,
   pages: [
     `<p class='instructions-text'>This is an experiment investigating how people reason.</p>
-     <p class='instructions-text'>You will be given twenty problems. Each problem consists of a <strong>set of if-then statements</strong> and an <strong>assumption</strong>.
-      You will then be asked about another statement. Your job is to determine whether you can conclude that the second statement is true or false from the premise.</p>
-     <p class='instructions-text'>For example, you might see the statement "If it rains, then the grass is wet." and the assumption "It rains", then asked to evaluate the statement "The grass is wet."</p>
+     <p class='instructions-text'>You will be given eighteen problems. Each problem consists of a <strong>set of if-then statements</strong>, an <strong>assumption</strong>, and a <strong>question</strong>.
+      Your job is to answer the question as accurately as you can.</p>
+     <p class='instructions-text'>For example, you might see the statement "If it rains, then the grass is wet", the assumption "It rains", then the question "Is the grass wet?"</p>
+     <p class='instructions-text'> You can answer either "yes," "no," or "unknown." You should use the unknown response when no valid conclusion can be derived from the assumption.</p>
      <p class='instructions-text'>All problems use the same set of if-then statements.${speededInstruction}</p>`,
     `<p class='instructions-text'>You will complete a practice trial to familiarize you with the task. You will move on to the main trials after completing the practice trial.</p>`,
   ],
