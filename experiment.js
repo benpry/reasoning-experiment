@@ -17,9 +17,31 @@ const renderWorld = function (world) {
 const renderStimulus = function (stimulus, world) {
   const worldStatements = renderWorld(world);
   const premise = `<p><strong>Assuming that</strong> ${stimulus.observed}</p>`;
-  const question = `<p><strong>What can we conclude about the following statement?</strong></p><p>${stimulus.query}</p>`;
+  const question = `<p>${stimulus.query}</p>`;
   const html = `<div class='stimulus'>${worldStatements}${premise}${question}</div>`;
   return html;
+};
+
+const createTrial = function (stimulus, world) {
+  const preTrial = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: `<div class="stimulus">${renderWorld(world)}</div>`,
+    choices: ["start"],
+    prompt: `<p>Study this list of statements, then click  "start" to see an assumption and question.</p>`,
+    button_html: `<button class='jspsych-btn' style="font-size:18pt">%choice%</button>`,
+  };
+
+  const trial = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: renderStimulus(stimulus, world),
+    choices: ["yes", "no", "unknown"],
+    on_load: isSpeeded ? startTimer : null,
+    on_finish: isSpeeded ? stopTimer : null,
+    trial_duration: isSpeeded ? trialDuration : null,
+    button_html: `<button class='jspsych-btn' style="font-size:18pt">%choice%</button>`,
+  };
+
+  return [preTrial, trial];
 };
 
 // Fisher-Yates shuffle, from here: https://stackoverflow.com/a/2450976
@@ -85,50 +107,18 @@ const instructions = {
   show_clickable_nav: true,
 };
 
-// set up practice trials
-const prePractice = {
-  type: jsPsychHtmlButtonResponse,
-  stimulus: `<div class="stimulus">${renderWorld(
-    practiceStimulus.world,
-  )}</div>`,
-  choices: ["start"],
-  prompt: `<p>Study this list of statements, then click  "start" to see a question.</p>`,
-  button_html: `<button class='jspsych-btn' style="font-size:18pt">%choice%</button>`,
-};
-const practice = {
-  type: jsPsychHtmlButtonResponse,
-  stimulus: renderStimulus(practiceStimulus, practiceStimulus.world),
-  choices: ["true", "false", "unknown"],
-  on_load: isSpeeded ? startTimer : null,
-  on_finish: isSpeeded ? stopTimer : null,
-  trial_duration: isSpeeded ? trialDuration : null,
-  button_html: `<button class='jspsych-btn' style="font-size:18pt">%choice%</button>`,
-};
+const trials = [consent, instructions];
+trials.push.apply(
+  trials,
+  createTrial(practiceStimulus, practiceStimulus.world),
+);
 
-const trials = [consent, instructions, prePractice, practice];
-const stimuli = shuffle(all_stimuli).slice(0, nTrials);
-
+// shuffle the stimuli
+const stimuli = shuffle(all_stimuli);
 // this only works because all stimuli use the same world
 // const sWorld = shuffle(stimuli[0].world); we're not shuffling in this version
 stimuli.map((s, i) => {
-  const preTrial = {
-    type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="stimulus">${renderWorld(world)}</div>`,
-    choices: ["start"],
-    prompt: `<p>Study this list of statements, then click  "start" to see an assumption and question.</p>`,
-    button_html: `<button class='jspsych-btn' style="font-size:18pt">%choice%</button>`,
-  };
-  trials.push(preTrial);
-  const trial = {
-    type: jsPsychHtmlButtonResponse,
-    stimulus: renderStimulus(s, world),
-    choices: ["true", "false", "unknown"],
-    on_load: isSpeeded ? startTimer : null,
-    on_finish: isSpeeded ? stopTimer : null,
-    trial_duration: isSpeeded ? trialDuration : null,
-    button_html: `<button class='jspsych-btn' style="font-size:18pt">%choice%</button>`,
-  };
-  trials.push(trial);
+  trials.push.apply(trials, createTrial(s, world));
 });
 
 // post-experiment survey
